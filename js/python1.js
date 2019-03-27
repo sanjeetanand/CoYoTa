@@ -32,6 +32,8 @@ function inputIdentifier(text){
                 temp = "-";
             } else if(temp == "mod"){
                 temp = "%";
+            }  else if(temp == "equal" || temp == "equals"){
+                temp = "=";
             }
             return temp;
         }
