@@ -143,11 +143,11 @@ function setUpNlp() {
     {
         nlp.addDocument(
             'javascript replace selected text with value {hello}',
-            'py_replace_selected', { fromFullSentence: true, expandIntent: true }
+            'js_replace_selected', { fromFullSentence: true, expandIntent: true }
         );
         nlp.addDocument(
             'javascript replace selected text with text {hello}',
-            'py_replace_selected', { fromFullSentence: true, expandIntent: true }
+            'js_replace_selected', { fromFullSentence: true, expandIntent: true }
         );
     }
 
