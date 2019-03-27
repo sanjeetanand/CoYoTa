@@ -255,7 +255,7 @@ function print_py(entities,text) {
 }
 
 function input_js(entities,text) {
-    const arg = (entities["number"] === undefined) ? (valueIdentifier(text)) : (entities['number'].value);
+    const arg = (entities["number"] === undefined) ? (inputIdentifier(text)) : (entities['number'].value);
     if(arg !== undefined){
         return ({
         intent: "insert",
@@ -266,7 +266,7 @@ function input_js(entities,text) {
     }
 }
 function input_py(entities,text) {
-    const arg = (entities["number"] === undefined) ? (valueIdentifier(text)) : (entities['number'].value);
+    const arg = (entities["number"] === undefined) ? (inputIdentifier(text)) : (entities['number'].value);
     if(arg !== undefined){
         return ({
         intent: "insert",
