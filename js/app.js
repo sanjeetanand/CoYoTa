@@ -218,6 +218,10 @@ function commandHandlers(command) {
         if (python) _startOfLine(editor2);
     } else if (command == 'py_line_end') {
         if (python) _endOfLine(editor2);
+    } else if (command == 'py_select_all') {
+        if (python) _selectAll(editor2);
+    } else if (command == 'py_delete_sel') {
+        if (python) _deleteSelected(editor2);
     }
     
     else if (command == 'js_insert_tab') {
@@ -244,6 +248,10 @@ function commandHandlers(command) {
         if (javascript) _startOfLine(editor1);
     } else if (command == 'js_line_end') {
         if (javascript) _endOfLine(editor1);
+    } else if (command == 'js_select_all') {
+        if (javascript) _selectAll(editor1);
+    } else if (command == 'js_delete_sel') {
+        if (javascript) _deleteSelected(editor1);
     }
     
 }
