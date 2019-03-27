@@ -16,3 +16,24 @@ function valueIdentifier(text){
         }
     }
 }
+
+function inputIdentifier(text){
+    var rawtext = text.split(" ");
+    for(var i = 0; i<rawtext.length; i++){
+        if(rawtext[i].trim() == 'input' || rawtext[i].trim() == 'insert'){
+            var temp = rawtext[i+1].trim();
+            if(temp == "multiply"){
+                temp = "*";
+            } else if(temp == "divide"){
+                temp = "/";
+            } else if(temp == "add"){
+                temp = "+";
+            } else if(temp == "sub"){
+                temp = "-";
+            } else if(temp == "mod"){
+                temp = "%";
+            }
+            return temp;
+        }
+    }
+}
