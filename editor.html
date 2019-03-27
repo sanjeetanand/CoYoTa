@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoYoTa v3.0</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:400,500,700" rel="stylesheet">
+    <link rel='shortcut icon' type='image/x-icon' href='/favicon.ico' />
+    <link rel="stylesheet" href="./lib/pane1/codemirror.css">
+    <link rel=stylesheet href="./lib/pane1/dialog.css">
+
+    <script src="./lib/pane1/codemirror.js"></script>
+    <script src="./lib/pane1/dialog.js"></script>
+    <script src="./lib/pane1/searchcursor.js"></script>
+    <script src="./lib/pane1/javascript.js"></script>
+    <script src="./lib/pane1/python.js"></script>
+    <script src="./lib/pane1/matchbrackets.js"></script>
+    <script src="./lib/pane1/vim.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav">
+            <!-- <a href="index.html"><img src="static/img/logo.svg"></a> -->
+            <span id="status">Listening...</span>
+            <div class="language">
+                <p>Active Language</p>
+                <img src="static/img/english.svg" id="english">
+                <img src="static/img/hindi.svg" id="hindi">
+            </div>
+            <div class="language">
+                <div id='s'>
+                    <i onclick='mutter()' class='fas fa-volume-up' style='font-size:20px;color:rgb(73, 138, 8);'></i>
+                </div>
+                <div id='m'>
+                    <i onclick='speaker()' class='fas fa-volume-mute' style='font-size:20px;color:rgb(73, 138, 8);'></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="editors" id="editorspane">
+            <div class="pane" id="js">
+                <div>&nbsp;</div>
+                <div class="title">
+                    <div class="filename"><img src="static/img/js.svg"><span id="jsfile">index.js</span></div>
+                    <div class="actions"><img src="static/img/undo.svg" id="undo"><button>Run<img src="static/img/run.svg"></button></div>
+                </div>
+                <div></div>
+                <div>
+                    <form>
+                        <textarea id="code1" name="code1">
+                        </textarea>
+                    </form>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="pane" id="python">
+                <div>&nbsp;</div>
+                <div class="title">
+                    <div class="filename"><img src="static/img/python.svg"><span id="pyfile">index.py</span></div>
+                    <div class="actions"><img src="static/img/undo.svg" id="undo"><button>Run<img src="static/img/run.svg"></button></div>
+                </div>
+                <div></div>
+                <div>
+                    <textarea id="code2" name="code2">
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="preview">
+            <div class="Loader" id="rec-btn"><img src="static/img/mic.svg"></div>
+            <div id="text">&nbsp;</div>
+        </div>
+    </div>
+</body>
+
+</html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles/editor.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script src="lib/bravey.min.js"></script>
+<script src="js/handlers.js"></script>
+<script src="js/mic.js"></script>
+<script src="js/parser.js"></script>
+
+<script src="js/index.js"></script>
+<script src="js/app.js"></script>
+<script src="js/python1.js"></script>
+<script>
+    var editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
+        lineNumbers: true,
+        keyMap: 'vim',
+        matchBrackets: true,
+        autofocus: true,
+        mode: 'javascript',
+        showCursorWhenSelecting: true,
+        inputStyle: "contenteditable"
+    });
+
+    var editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
+        lineNumbers: true,
+        keyMap: 'vim',
+        matchBrackets: true,
+        mode: 'python',
+        autofocus: true,
+        showCursorWhenSelecting: true,
+        inputStyle: "contenteditable",
+    });
+
+    //insert tab
+    function _insertTabAtCursor(editor) {
+       editor.doc.cm.execCommand('insertTab')
+    }
+    //remove tab
+    function _removeTabAtCursor(editor) {
+        editor.doc.cm.execCommand('indentLess')
+    }
+    //auto tab
+    function _autoTabAtCursor(editor) {
+        editor.doc.cm.execCommand('indentAuto')
+    }
+
+    //select all
+    function _selectAll(editor){
+        editor.doc.cm.execCommand('selectAll');
+    }
+
+    //insert code in both editors
+    function _insertTextAtCursor(editor, text) {
+        var doc = editor.getDoc();
+        var cursor = doc.getCursor();
+        doc.replaceRange(text, cursor);
+        _autoTabAtCursor(editor);
+    }
+
+    //replace seleted
+    function _replaceSelected(editor,text) {
+        editor.doc.replaceSelection(text);
+    }
+
+    //undo and redo
+    function _undo() {
+        var doc1 = editor1.getDoc();
+        var doc2 = editor2.getDoc();
+        doc1.undo()
+        doc2.undo()
+        //editor.doc.cm.execCommand('undo')
+    }
+
+    function _redo() {
+        var doc1 = editor1.getDoc();
+        var doc2 = editor2.getDoc();
+        doc1.redo()
+        doc2.redo()
+        //editor.doc.cm.execCommand('redo')
+    }
+
+    //movement
+    function _wmoveright(editor) {
+        let a = editor.doc.cm.execCommand('goWordRight')
+    }
+    function _wmoveleft(editor) {
+        let a = editor.doc.cm.execCommand('goWordLeft')
+    }
+    function _lineUp(editor) {
+        let a = editor.doc.cm.execCommand('goLineUp')
+    }
+    function _lineDown(editor) {
+        let a = editor.doc.cm.execCommand('goLineDown')
+    }
+    function _startOfLine(editor) {
+        let a = editor.doc.cm.execCommand('goLineStart')
+    }
+    function _endOfLine(editor) {
+        let a = editor.doc.cm.execCommand('goLineEnd')
+    }
+    function _moveToLine(editor,line) {
+        if(!isNaN(line)){
+            if(line<=editor.lineCount()){
+                editor.setCursor(line-1,0);
+            }
+        }
+    }
+    //Move left
+    function _moveChLeft(editor,n) {
+        var doc = editor.getDoc();
+        var cursor = doc.getCursor();
+        var cursorLine = cursor.line;
+        var cursorCh = cursor.ch;
+        editor.setCursor({line: cursorLine , ch : cursorCh -n });
+    }
+    //move right
+    function _moveChRight(editor,n) {
+        var doc = editor.getDoc();
+        var cursor = doc.getCursor();
+        var cursorLine = cursor.line;
+        var cursorCh = cursor.ch;
+        editor.setCursor({line: cursorLine , ch : cursorCh +n });
+    }
+	//delete commands
+	function _deleteLine(editor) {
+        let a = editor.doc.cm.execCommand('deleteLine')
+    }
+    function _deleteWordBefore(editor) {
+        let a = editor.doc.cm.execCommand('delWordBefore')
+    }
+    function _deleteWordAfter(editor) {
+        let a = editor.doc.cm.execCommand('delWordAfter')
+    }
+    function _deleteSelected(editor) {
+        editor.doc.replaceSelection('');
+    }
+
+</script>
+
+<!--Speech-->
+<script>
+    function speak(data) {
+        var msg = new SpeechSynthesisUtterance(data);
+        msg.lang = 'en-US';
+        msg.rate = 0.8;
+        window.speechSynthesis.speak(msg);
+    }
+    
+    function speaker(){
+        var s = document.getElementById('s');
+        var m = document.getElementById('m');
+        s.style.display = "block";
+        m.style.display = "none";
+    }
+    function mutter(){
+        var s = document.getElementById('s');
+        var m = document.getElementById('m');
+        s.style.display = "none";
+        m.style.display = "block";
+    }
+    
+    function clicker(){
+        var c = document.getElementById('m');
+        c.click();
+    }
+</script>
+
+// integration
+<script>
+    newApp()
+    mic.startListening()
+</script>
