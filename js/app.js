@@ -47,13 +47,25 @@ function micResponseHandler(nlp, python, javascript) {
         if (!dexterIsRunning) {
             return;
         }
-        let py_result = py_handler(entities,text);
-        let js_result = js_handler(entities,text);
-        if (javascript) {
-            _insertTextAtCursor(editor1, js_result.entity); 
-        }
-        if (python) {
-            _insertTextAtCursor(editor2, py_result.entity);   
+        if(entities.intent.startsWith("py")){
+            let py_result = py_handler(entities,text);
+            if (python) {
+                _insertTextAtCursor(editor2, py_result.entity);   
+            }
+        } else if(entities.intent.startsWith("js")){
+            let js_result = js_handler(entities,text);
+            if (javascript) {
+                _insertTextAtCursor(editor1, js_result.entity); 
+            }
+        } else {
+            let py_result = py_handler(entities,text);
+            let js_result = js_handler(entities,text);
+            if (javascript) {
+                _insertTextAtCursor(editor1, js_result.entity); 
+            }
+            if (python) {
+                _insertTextAtCursor(editor2, py_result.entity);   
+            }
         }
 
         speak(py_result.entity);
