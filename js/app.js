@@ -49,6 +49,7 @@ function micResponseHandler(nlp, python, javascript) {
         }
         if(entities.intent.startsWith("py")){
             let py_result = py_handler(entities,text);
+<<<<<<< HEAD
             if(py_result.intent == "save"){
                 saveDexter(py_result.entity);
             } else {
@@ -57,12 +58,20 @@ function micResponseHandler(nlp, python, javascript) {
                 }
                 speak(py_result.entity);
             }  
+=======
+            if (python) {
+                _insertTextAtCursor(editor2, py_result.entity);   
+            }
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
         } else if(entities.intent.startsWith("js")){
             let js_result = js_handler(entities,text);
             if (javascript) {
                 _insertTextAtCursor(editor1, js_result.entity); 
             }
+<<<<<<< HEAD
             speak(js_result.entity);
+=======
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
         } else {
             let py_result = py_handler(entities,text);
             let js_result = js_handler(entities,text);
@@ -72,7 +81,10 @@ function micResponseHandler(nlp, python, javascript) {
             if (python) {
                 _insertTextAtCursor(editor2, py_result.entity);   
             }
+<<<<<<< HEAD
             speak(py_result.entity);
+=======
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
         }
 
         

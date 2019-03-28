@@ -32,13 +32,18 @@ function inputIdentifier(text){
                 temp = "-";
             } else if(temp == "mod"){
                 temp = "%";
+<<<<<<< HEAD
             } else if(temp == "equal" || temp == "equals"){
+=======
+            }  else if(temp == "equal" || temp == "equals"){
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
                 temp = "=";
             }
             return temp;
         }
     }
 }
+<<<<<<< HEAD
 
 function fileIdentifier(text){
     var rawtext = text.split(" ");
@@ -48,3 +53,5 @@ function fileIdentifier(text){
         }
     }
 }
+=======
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47

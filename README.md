@@ -27,4 +27,7 @@ Navigate to localhost:8000 or Ctrl+click on link in terminal
 **Additional requirement**:
 nodejs to run javascript code.
 python3.
+<<<<<<< HEAD
 
+=======
+>>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
