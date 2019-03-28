@@ -35,6 +35,7 @@ function py_handler(result,text) {
         "py_input": input_py,
         "py_new_line": new_line_py,
         "py_replace_selected": replace_selected_py,
+        "py_save_file": py_save_file,
     };
 
     let entity = result.intent;
@@ -44,6 +45,14 @@ function py_handler(result,text) {
         entities[i.id] = i;
     }
     return function_handler(entities,text);
+}
+
+function py_save_file(entities,text) {
+    const value = entities["file_name"].value;
+        return ({
+            intent: "save",
+            entity: value,
+        });
 }
 
 function declare_integer_js(entities,text) {
@@ -79,7 +88,7 @@ function declare_string_js(entities,text){
     if(name !== undefined && value !== undefined){
         return ({
             intent: "insert",
-            entity: `var ${name} = "${value};"\n`,
+            entity: `var ${name} = "${value}";\n`,
             movement_callback: []
         });
     } else {
@@ -134,7 +143,7 @@ function create_for_loop_js(entities,text) {
         return ({
             intent: "insert",
             entity: `for(${name}=0;${name}<${upper_bound};${name}++){\n\n}`,
-            movement_callback: []
+            movement_callback: ["_lineUp"]
         });
     } else {
         return;

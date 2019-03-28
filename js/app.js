@@ -29,13 +29,13 @@ function typeEffect(element, speed) {
 
 function micResponseHandler(nlp, python, javascript) {
     return (text) => {
-        console.log('response handler says', text)
+        console.log('response handler says', text);
         let entities = nlp.test(text);
         if (!entities) {
             return;
         }
         if (IsKnownCommand(entities.intent)) {
-            commandHandlers(entities.intent)
+            commandHandlers(entities.intent);
             return;
         }
 
@@ -49,14 +49,20 @@ function micResponseHandler(nlp, python, javascript) {
         }
         if(entities.intent.startsWith("py")){
             let py_result = py_handler(entities,text);
-            if (python) {
-                _insertTextAtCursor(editor2, py_result.entity);   
-            }
+            if(py_result.intent == "save"){
+                saveDexter(py_result.entity);
+            } else {
+                if (python) {
+                    _insertTextAtCursor(editor2, py_result.entity);   
+                }
+                speak(py_result.entity);
+            }  
         } else if(entities.intent.startsWith("js")){
             let js_result = js_handler(entities,text);
             if (javascript) {
                 _insertTextAtCursor(editor1, js_result.entity); 
             }
+            speak(js_result.entity);
         } else {
             let py_result = py_handler(entities,text);
             let js_result = js_handler(entities,text);
@@ -66,9 +72,10 @@ function micResponseHandler(nlp, python, javascript) {
             if (python) {
                 _insertTextAtCursor(editor2, py_result.entity);   
             }
+            speak(py_result.entity);
         }
 
-        speak(py_result.entity);
+        
 
         $('#text').html(text);
         typeEffect($('#text'), 75);
@@ -107,6 +114,16 @@ function runJavascript() {
         data: { content:content },
         success: showJsResult,
         error: showJsResult,
+    });
+}
+
+function saveDexter(file_name) {
+    let content = editor2.getValue();
+    $.ajax({
+        url: 'http://localhost:5000/write',
+        type: 'POST',
+        crossDomain: true,
+        data: { content:content,file_name:file_name},
     });
 }
 
@@ -218,6 +235,10 @@ function commandHandlers(command) {
         if (python) _startOfLine(editor2);
     } else if (command == 'py_line_end') {
         if (python) _endOfLine(editor2);
+    } else if (command == 'py_select_all') {
+        if (python) _selectAll(editor2);
+    } else if (command == 'py_delete_sel') {
+        if (python) _deleteSelected(editor2);
     }
     
     else if (command == 'js_insert_tab') {
@@ -244,6 +265,10 @@ function commandHandlers(command) {
         if (javascript) _startOfLine(editor1);
     } else if (command == 'js_line_end') {
         if (javascript) _endOfLine(editor1);
+    } else if (command == 'js_select_all') {
+        if (javascript) _selectAll(editor1);
+    } else if (command == 'js_delete_sel') {
+        if (javascript) _deleteSelected(editor1);
     }
     
 }

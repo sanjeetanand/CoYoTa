@@ -64,7 +64,7 @@ class Mic {
 
     // garbage
     setupMic(resultReceiver) {
-        this.resultReceiver = resultReceiver
+        this.resultReceiver = resultReceiver;
     }
 //
     setupMic(micElem, outputElem, languageSelect, errorHandlerDiv) {
@@ -102,7 +102,7 @@ class Mic {
 
     startListening() {
         if (!this.recognition) {
-            this.recognition = new webkitSpeechRecognition();
+            this.recognition = new window.webkitSpeechRecognition();
             this.setupRecognitionHandlers();
         }
         this.listening = true;

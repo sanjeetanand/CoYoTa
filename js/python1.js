@@ -32,8 +32,19 @@ function inputIdentifier(text){
                 temp = "-";
             } else if(temp == "mod"){
                 temp = "%";
+            } else if(temp == "equal" || temp == "equals"){
+                temp = "=";
             }
             return temp;
+        }
+    }
+}
+
+function fileIdentifier(text){
+    var rawtext = text.split(" ");
+    for(var i = 0; i<rawtext.length; i++){
+        if(rawtext[i].trim() == 'as' || rawtext[i].trim() == 'name'){
+            return rawtext[i+1].trim();
         }
     }
 }

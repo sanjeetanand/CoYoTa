@@ -1,3 +1,11 @@
+var allowed_fun_name = [
+    {id: 'even_odd', text: 'even odd'},
+    {id: 'fibonacci', text: 'fibonacci'},
+    {id: 'table', text: 'table'},
+    {id: 'hello', text: 'hello'},
+    {id:'file', text:'file'},
+];
+
 var allowed_relational_operators = [
     { id: 'equal_to', text: 'equal to' },
     { id: 'equal_to', text: 'equal to' },
@@ -58,7 +66,7 @@ var known_commands = [
     { id: 'dexter_run_py', text: 'dexter run python' },
     { id: 'dexter_run_js', text: 'dexter run javascript' },
 
-    //{ id: 'dexter_zulip', text: 'dexter save' },
+    /* { id: 'dexter_save', text: 'dexter save' }, */
 
     { id: 'dexter_undo', text: 'dexter undo' },
     { id: 'dexter_redo', text: 'dexter redo' },
@@ -108,6 +116,8 @@ var my_commands = [
     { id: 'js_move_cursor_to_line'},
     { id: 'js_move_cursor_in_line'},
     { id: 'js_replace_selected'},
+
+
 ]
 function isMyCommand(command) {
     for (let each of my_commands) {
@@ -127,6 +137,32 @@ function setUpNlp() {
     for (let command of known_commands) {
         nlp.addDocument(command.text, command.id, { fromFullSentence: true, expandIntent: true });
     }
+
+    //save file
+    {
+        nlp.addIntent('py_save_file', [
+            { entity: 'file_name', id: 'file_name' },
+        ]);
+
+        let file_name = new Bravey.StringEntityRecognizer('file_name');
+        for (let each of allowed_fun_name) {
+            file_name.addMatch(each.id, each.text);
+        }
+        nlp.addEntity(file_name);
+
+        nlp.addDocument(
+            'save file as {file_name}',
+            'py_save_file'
+        );
+        nlp.addDocument(
+            'save file as file name {file_name}',
+            'py_save_file'
+        );
+
+        showResults(nlp.test('save file as hello'));
+        showResults(nlp.test('save file as file name hello'));
+    }
+
 
     //py_replace_selected
     {

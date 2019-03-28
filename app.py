@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from judge import runProcess
 from flask_cors import CORS
 
+
 app = Flask('dexter')
 CORS(app)
 
@@ -21,6 +22,16 @@ def compile():
 
     outBuf, errBuf = runProcess(['python3', 'intermediate.py'])
     return jsonify({'out': str(outBuf), 'err': str(errBuf)})
+
+@app.route('/write', methods=['POST'])
+def write():
+    content = r'' + request.form['content']
+    file_name = r'' + request.form['file_name']
+    with open(file_name+'.py', 'w') as f:
+        for i in content:
+            f.write(i)
+    f.close()
+    return
 
 
 @app.route('/js', methods=['POST'])

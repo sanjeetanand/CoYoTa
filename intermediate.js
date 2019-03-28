@@ -1,4 +1,5 @@
-for(x=0;x<10;x++){
-	console.log(x);
+var alpha = "hello";
+for(i=0;i<10;i++){
+console.log(alpha);
   
-}                        
+}
