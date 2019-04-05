@@ -59,24 +59,6 @@ def writejs():
         f.close()
     return
 
-@app.route('/openEditorJS', methods=['POST'])
-def openEditorJS():
-    resultjs = ""
-    with open('intermediate.js', 'r') as f:
-        for i in f:
-            resultjs = resultjs + i
-        f.close()
-    return jsonify({'out': resultjs , 'err': 'error_occured'})
-
-@app.route('/openEditorPY', methods=['POST'])
-def openEditorPY():
-    resultpy = ""
-    with open('intermediate.py', 'r') as f:
-        for i in f:
-            resultpy = resultpy + i
-        f.close()
-    return jsonify({'out': resultpy , 'err': 'error_occured'})
-
 @app.route('/openFilePY', methods=['POST'])
 def openFilePY():
     file_name = r'' + request.form['file_name']

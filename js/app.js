@@ -149,34 +149,6 @@ function saveJS(file_name) {
     });
 }
 
-function openEditorJS() {
-    let showJsResult = (result) => {
-        $('#jsfile').html('index.js');
-        editor1.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
-    }
-    $.ajax({
-        url: 'http://localhost:5000/openEditorJS',
-        type: 'POST',
-        crossDomain: true,
-        success: showJsResult,
-        error: showJsResult,
-    });
-}
-
-function openEditorPY() {
-    let showPyResult = (result) => {
-        $('#pyfile').html('index.py');
-        editor2.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
-    }
-    $.ajax({
-        url: 'http://localhost:5000/openEditorPY',
-        type: 'POST',
-        crossDomain: true,
-        success: showPyResult,
-        error: showPyResult,
-    });
-}
-
 function openFilePY(file_name) {
     let showPyResult = (result) => {
         $('#pyfile').html('index.py');
