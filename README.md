@@ -10,13 +10,13 @@ CoYoTa is an AI-based code editor that allows you to code in Python and Javascri
 ### How to run
 
 ```
-$ cd Coyota-Python
+$ cd Coyota
 $ pip install --user flask flask-cors
 $ python3 app.py
 
 
 Open another terminal window
-$ cd Coyota-Python
+$ cd Coyota
 $ python3 -m http.server
 
 Navigate to localhost:8000 or Ctrl+click on link in terminal
@@ -27,7 +27,3 @@ Navigate to localhost:8000 or Ctrl+click on link in terminal
 **Additional requirement**:
 nodejs to run javascript code.
 python3.
-<<<<<<< HEAD
-
-=======
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47

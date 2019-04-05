@@ -1,57 +1,146 @@
-function varIdentifier(text){
+function varIdentifier(text) {
     var rawtext = text.split(" ");
-    //console.log(typeof rawtext);
-    for(var i = 0; i<rawtext.length; i++){
-        if(rawtext[i].trim() == 'integer' || rawtext[i].trim() == 'variable' || rawtext[i].trim() == 'string' || rawtext[i].trim() == 'function'){
-            return rawtext[i+1].trim();
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'integer' || rawtext[i].trim() == 'variable' || rawtext[i].trim() == 'string' || rawtext[i].trim() == 'function') {
+            var name = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                if (rawtext[j].trim() == 'with' || rawtext[j].trim() == 'count' || rawtext[j].trim() == 'value' || rawtext[j].trim() == 'text') {
+                    break;
+                }
+                name = name + rawtext[j].trim().charAt(0).toUpperCase() + rawtext[j].slice(1);
+            }
+            return name;
         }
     }
 }
 
-function valueIdentifier(text){
+function valueIdentifier(text) {
     var rawtext = text.split(" ");
-    for(var i = 0; i<rawtext.length; i++){
-        if(rawtext[i].trim() == 'value' || rawtext[i].trim() == 'argument' || rawtext[i].trim() == 'text' || rawtext[i].trim() == 'print' || rawtext[i].trim() == 'input' || rawtext[i].trim() == 'insert'){
-            return rawtext[i+1].trim();
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'value' || rawtext[i].trim() == 'argument' || rawtext[i].trim() == 'text' || rawtext[i].trim() == 'print') {
+            return rawtext[i + 1].trim();
         }
     }
 }
 
-function inputIdentifier(text){
+function textIdentifier(text) {
     var rawtext = text.split(" ");
-    for(var i = 0; i<rawtext.length; i++){
-        if(rawtext[i].trim() == 'input' || rawtext[i].trim() == 'insert'){
-            var temp = rawtext[i+1].trim();
-            if(temp == "multiply"){
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'value' || rawtext[i].trim() == 'text') {
+            var value = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                value = value + " " + rawtext[j].trim();
+            }
+            return value;
+        }
+    }
+}
+
+function argumentIdentifier(text) {
+    var rawtext = text.split(" ");
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'argument') {
+            var value = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                value = value + ", " + rawtext[j].trim();
+            }
+            return value;
+        }
+    }
+}
+
+function inputIdentifier(text) {
+    var rawtext = text.split(" ");
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'input' || rawtext[i].trim() == 'insert') {
+            var temp = rawtext[i + 1].trim();
+            if (temp == "multiply") {
                 temp = "*";
-            } else if(temp == "divide"){
+            } else if (temp == "divide") {
                 temp = "/";
-            } else if(temp == "add"){
+            } else if (temp == "add") {
                 temp = "+";
-            } else if(temp == "sub"){
+            } else if (temp == "sub") {
                 temp = "-";
-            } else if(temp == "mod"){
+            } else if (temp == "mod") {
                 temp = "%";
-<<<<<<< HEAD
-            } else if(temp == "equal" || temp == "equals"){
-=======
-            }  else if(temp == "equal" || temp == "equals"){
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
+            } else if (temp == "equal" || temp == "equals") {
                 temp = "=";
             }
             return temp;
         }
     }
 }
-<<<<<<< HEAD
 
-function fileIdentifier(text){
+function inputVarIdentifier(text) {
     var rawtext = text.split(" ");
-    for(var i = 0; i<rawtext.length; i++){
-        if(rawtext[i].trim() == 'as' || rawtext[i].trim() == 'name'){
-            return rawtext[i+1].trim();
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'input' || rawtext[i].trim() == 'insert') {
+            var temp = rawtext[i + 1].trim();
+            if (temp == "variable") {
+                var name = rawtext[i + 2].trim();
+                for (var j = i + 3; j < rawtext.length; j++) {
+                    name = name + rawtext[j].trim().charAt(0).toUpperCase() + rawtext[j].slice(1);
+                }
+                return name;
+            } else if (temp == "value") {
+                var name = rawtext[i + 2].trim();
+                for (var j = i + 3; j < rawtext.length; j++) {
+                    name = name + " " + rawtext[j].trim();
+                }
+                return name;
+            }
         }
     }
 }
-=======
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
+
+function fileIdentifier(text) {
+    var rawtext = text.split(" ");
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'as') {
+            var name = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                name = name + rawtext[j].trim().charAt(0).toUpperCase() + rawtext[j].slice(1);
+            }
+            return name;
+        }
+    }
+}
+
+function fileOpenIdentifier(text) {
+    var rawtext = text.split(" ");
+    for (var i = 0; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'file' || rawtext[i].trim() == 'files') {
+            var name = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                name = name + rawtext[j].trim().charAt(0).toUpperCase() + rawtext[j].slice(1);
+            }
+            return name;
+        }
+    }
+}
+
+function printIdentifier(text) {
+    var rawtext = text.split(" ");
+    for (var i = 1; i < rawtext.length; i++) {
+        if (rawtext[i].trim() == 'variable') {
+            var name = rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                name = name + rawtext[j].trim().charAt(0).toUpperCase() + rawtext[j].slice(1);
+            }
+            return name;
+        } else if (rawtext[i].trim() == 'value' || rawtext[i].trim() == 'string') {
+            var name = "\""+rawtext[i + 1].trim();
+            for (var j = i + 2; j < rawtext.length; j++) {
+                name = name + " " + rawtext[j].trim();
+            }
+            name = name + "\"";
+            return name;
+        } else if (rawtext[i].trim() == 'number') {
+            var name = rawtext[i + 1].trim();
+            return name;
+        } else {
+            return 0;
+        }
+    }
+}

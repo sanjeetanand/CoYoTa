@@ -1,6 +1,7 @@
 var nlp = null;
 var mic = null;
 
+
 var python = true;
 var javascript = true;
 
@@ -47,47 +48,46 @@ function micResponseHandler(nlp, python, javascript) {
         if (!dexterIsRunning) {
             return;
         }
+
         if(entities.intent.startsWith("py")){
             let py_result = py_handler(entities,text);
-<<<<<<< HEAD
             if(py_result.intent == "save"){
-                saveDexter(py_result.entity);
+                savePython(py_result.entity);
             } else {
                 if (python) {
                     _insertTextAtCursor(editor2, py_result.entity);   
                 }
                 speak(py_result.entity);
-            }  
-=======
-            if (python) {
-                _insertTextAtCursor(editor2, py_result.entity);   
             }
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
         } else if(entities.intent.startsWith("js")){
             let js_result = js_handler(entities,text);
-            if (javascript) {
-                _insertTextAtCursor(editor1, js_result.entity); 
+            if(js_result.intent == "save"){
+                saveJS(js_result.entity);
+            } else {
+                if (javascript) {
+                    _insertTextAtCursor(editor1, js_result.entity);   
+                }
+                speak(js_result.entity);
             }
-<<<<<<< HEAD
-            speak(js_result.entity);
-=======
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
         } else {
             let py_result = py_handler(entities,text);
             let js_result = js_handler(entities,text);
-            if (javascript) {
-                _insertTextAtCursor(editor1, js_result.entity); 
-            }
-            if (python) {
-                _insertTextAtCursor(editor2, py_result.entity);   
-            }
-<<<<<<< HEAD
-            speak(py_result.entity);
-=======
->>>>>>> dfe0ee14fd9b48554b1d8e7f5ba4e84e7af83e47
+            if(js_result.intent == "save" && py_result.intent == "save"){
+                saveJS(js_result.entity);
+                savePython(py_result.entity);
+            }else if(js_result.intent == "open" && py_result.intent == "open"){
+                openFileJS(js_result.entity);
+                openFilePY(py_result.entity);
+            } else {
+                if (javascript) {
+                    _insertTextAtCursor(editor1, js_result.entity); 
+                }
+                if (python) {
+                    _insertTextAtCursor(editor2, py_result.entity);   
+                }
+                speak(py_result.entity);
+            }   
         }
-
-        
 
         $('#text').html(text);
         typeEffect($('#text'), 75);
@@ -95,11 +95,11 @@ function micResponseHandler(nlp, python, javascript) {
 }
 
 function runPython() {
-    let content = editor2.getValue()
+    let content = editor2.getValue();
 
     let showPyResult = (result) => {
-        $('#pyfile').html('output')
-        editor2.setValue(result.out.replace('b\'', ''));
+        $('#pyfile').html('output');
+        editor2.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));   
     };
     $.ajax({
         url: 'http://localhost:5000/compile',
@@ -117,7 +117,7 @@ function runJavascript() {
     let showJsResult = (result) => {
         $('#jsfile').html('output');
         console.log(result);
-        editor1.setValue(result.out.replace('b\'', ''));
+        editor1.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
     }
     $.ajax({
         url: 'http://localhost:5000/js',
@@ -129,13 +129,81 @@ function runJavascript() {
     });
 }
 
-function saveDexter(file_name) {
-    let content = editor2.getValue();
+function savePython(file_name) {
+    let contentpy = editor2.getValue();
     $.ajax({
-        url: 'http://localhost:5000/write',
+        url: 'http://localhost:5000/writepy',
         type: 'POST',
         crossDomain: true,
-        data: { content:content,file_name:file_name},
+        data: { contentpy:contentpy,file_name:file_name},
+    });
+}
+
+function saveJS(file_name) {
+    let contentjs = editor1.getValue();
+    $.ajax({
+        url: 'http://localhost:5000/writejs',
+        type: 'POST',
+        crossDomain: true,
+        data: { contentjs:contentjs,file_name:file_name},
+    });
+}
+
+function openEditorJS() {
+    let showJsResult = (result) => {
+        $('#jsfile').html('index.js');
+        editor1.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
+    }
+    $.ajax({
+        url: 'http://localhost:5000/openEditorJS',
+        type: 'POST',
+        crossDomain: true,
+        success: showJsResult,
+        error: showJsResult,
+    });
+}
+
+function openEditorPY() {
+    let showPyResult = (result) => {
+        $('#pyfile').html('index.py');
+        editor2.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
+    }
+    $.ajax({
+        url: 'http://localhost:5000/openEditorPY',
+        type: 'POST',
+        crossDomain: true,
+        success: showPyResult,
+        error: showPyResult,
+    });
+}
+
+function openFilePY(file_name) {
+    let showPyResult = (result) => {
+        $('#pyfile').html('index.py');
+        editor2.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
+    }
+    $.ajax({
+        url: 'http://localhost:5000/openFilePY',
+        type: 'POST',
+        crossDomain: true,
+        data: {file_name:file_name},
+        success: showPyResult,
+        error: showPyResult,
+    });
+}
+
+function openFileJS(file_name) {
+    let showJsResult = (result) => {
+        $('#jsfile').html('index.js');
+        editor1.setValue(result.out.replace(/\\n/g, '\\\n').replace('b\'','').replace(/\\/g,'').replace('\'',''));
+    }
+    $.ajax({
+        url: 'http://localhost:5000/openFileJS',
+        type: 'POST',
+        crossDomain: true,
+        data: {file_name:file_name},
+        success: showJsResult,
+        error: showJsResult,
     });
 }
 
@@ -220,6 +288,9 @@ function commandHandlers(command) {
         speaker();
     } else if (command == 'deac_speaker') {
         mutter();
+    } else if (command == 'open_editor') {
+        openFileJS("intermediate");
+        openFilePY("intermediate");
     }
     
     

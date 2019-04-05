@@ -3,14 +3,19 @@ function js_handler(result,text) {
         "declare_integer": declare_integer_js,
         "declare_string": declare_string_js,
         "create_function": create_function_js,
+        "call_function": call_function_js,
         "create_for": create_for_loop_js,
         "user_while": create_user_while_js,
         "js_move_cursor_to_line":move_cursor_to_line_js,
         "js_move_cursor_in_line":move_cursor_in_line_js,
         "print": print_js,
         "js_input": input_js,
+        "js_input_var": input_var_js,
         "js_new_line": new_line_js,
         "js_replace_selected": replace_selected_js,
+        "js_save_file": save_file,
+        "save_file": save_file,
+        "open_file": open_file,
     };
 
     let entity = result.intent;
@@ -27,15 +32,19 @@ function py_handler(result,text) {
         "declare_integer": declare_integer_py,
         "declare_string": declare_string_py,
         "create_function": create_function_py,
+        "call_function": call_function_py,
         "create_for": create_for_loop_py,
         "user_while": create_user_while_py,
         "py_move_cursor_to_line":move_cursor_to_line_py,
         "py_move_cursor_in_line":move_cursor_in_line_py,
         "print": print_py,
         "py_input": input_py,
+        "py_input_var": input_var_py,
         "py_new_line": new_line_py,
         "py_replace_selected": replace_selected_py,
-        "py_save_file": py_save_file,
+        "py_save_file": save_file,
+        "save_file": save_file,
+        "open_file": open_file,
     };
 
     let entity = result.intent;
@@ -84,7 +93,7 @@ function declare_integer_py(entities,text) {
 
 function declare_string_js(entities,text){
     const name = varIdentifier(text);
-    const value = valueIdentifier(text);
+    const value = textIdentifier(text);
     if(name !== undefined && value !== undefined){
         return ({
             intent: "insert",
@@ -97,7 +106,7 @@ function declare_string_js(entities,text){
 }
 function declare_string_py(entities,text){
     const name = varIdentifier(text);
-    const value = valueIdentifier(text);
+    const value = textIdentifier(text);
     if(name !== undefined && value !== undefined){
         return ({
             intent: "insert",
@@ -111,7 +120,7 @@ function declare_string_py(entities,text){
 
 function create_function_js(entities,text) {
     const name = varIdentifier(text);
-    const arg = valueIdentifier(text);
+    const arg = argumentIdentifier(text);
     if(name !== undefined && arg !== undefined){
         return ({
             intent: "insert",
@@ -124,11 +133,36 @@ function create_function_js(entities,text) {
 }
 function create_function_py(entities,text) {
     const name = varIdentifier(text);
-    const arg = valueIdentifier(text);
+    const arg = argumentIdentifier(text);
     if(name !== undefined && arg !== undefined){
         return ({
             intent: "insert",
             entity: `def ${name}(${arg}):\n\t`,
+            movement_callback: []
+    });
+    } else {
+        return;
+    }
+}
+
+function call_function_js(entities,text) {
+    const name = varIdentifier(text);
+    if(name !== undefined){
+        return ({
+            intent: "insert",
+            entity: `${name}();\n`,
+            movement_callback: []
+    });
+    } else {
+        return;
+    }
+}
+function call_function_py(entities,text) {
+    const name = varIdentifier(text);
+    if(name !== undefined){
+        return ({
+            intent: "insert",
+            entity: `${name}()\n`,
             movement_callback: []
     });
     } else {
@@ -241,7 +275,7 @@ function move_cursor_to_line_py(entities,text) {
 }
 
 function print_js(entities,text) {
-    const arg = (entities["number"] === undefined) ? (valueIdentifier(text)) : (entities['number'].value);
+    const arg = (entities["number"] === undefined) ? (printIdentifier(text)) : (entities['number'].value);
     if(arg !== undefined){
         return ({
             intent: "insert",
@@ -252,7 +286,7 @@ function print_js(entities,text) {
     }
 }
 function print_py(entities,text) {
-    const arg = (entities["number"] === undefined) ? (valueIdentifier(text)) : (entities['number'].value);
+    const arg = (entities["number"] === undefined) ? (printIdentifier(text)) : (entities['number'].value);
     if(arg !== undefined){
         return ({
             intent: "insert",
@@ -276,6 +310,29 @@ function input_js(entities,text) {
 }
 function input_py(entities,text) {
     const arg = (entities["number"] === undefined) ? (inputIdentifier(text)) : (entities['number'].value);
+    if(arg !== undefined){
+        return ({
+        intent: "insert",
+        entity: `${arg}`
+    });
+    } else {
+        return;
+    }
+}
+
+function input_var_js(entities,text) {
+    const arg = inputVarIdentifier(text);
+    if(arg !== undefined){
+        return ({
+        intent: "insert",
+        entity: `${arg}`
+    });
+    } else {
+        return;
+    }
+}
+function input_var_py(entities,text) {
+    const arg = inputVarIdentifier(text);
     if(arg !== undefined){
         return ({
         intent: "insert",
@@ -313,6 +370,25 @@ function replace_selected_py(entities,text) {
     if(arg !== undefined){
         return({
             intent : "insert",
+            entity : `${arg}`
+        });
+    }
+}
+
+function save_file(entities,text) {
+    const arg = fileIdentifier(text);
+    if(arg !== undefined){
+        return({
+            intent : "save",
+            entity : `${arg}`
+        });
+    }
+}
+function open_file(entities,text) {
+    const arg = fileOpenIdentifier(text);
+    if(arg !== undefined){
+        return({
+            intent : "open",
             entity : `${arg}`
         });
     }

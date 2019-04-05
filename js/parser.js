@@ -1,11 +1,3 @@
-var allowed_fun_name = [
-    {id: 'even_odd', text: 'even odd'},
-    {id: 'fibonacci', text: 'fibonacci'},
-    {id: 'table', text: 'table'},
-    {id: 'hello', text: 'hello'},
-    {id:'file', text:'file'},
-];
-
 var allowed_relational_operators = [
     { id: 'equal_to', text: 'equal to' },
     { id: 'equal_to', text: 'equal to' },
@@ -66,7 +58,7 @@ var known_commands = [
     { id: 'dexter_run_py', text: 'dexter run python' },
     { id: 'dexter_run_js', text: 'dexter run javascript' },
 
-    /* { id: 'dexter_save', text: 'dexter save' }, */
+    { id: 'open_editor', text: 'open editor' },
 
     { id: 'dexter_undo', text: 'dexter undo' },
     { id: 'dexter_redo', text: 'dexter redo' },
@@ -92,10 +84,10 @@ var known_commands = [
     { id: 'js_del_word_after', text: 'javascript delete word after cursor' },
 
     { id: 'py_select_all', text: 'python select all'},
-    { id: 'py_delete_sel', text: 'python delete selection'},
+    { id: 'py_delete_sel', text: 'python delete selected'},
 
     { id: 'js_select_all', text: 'javascript select all'},
-    { id: 'js_delete_sel', text: 'javascript delete selection'},
+    { id: 'js_delete_sel', text: 'javascript delete selected'},
 
     { id: 'act_speaker', text: 'activate speaker'},
     { id: 'deac_speaker', text: 'deactivate speaker'},
@@ -138,31 +130,53 @@ function setUpNlp() {
         nlp.addDocument(command.text, command.id, { fromFullSentence: true, expandIntent: true });
     }
 
-    //save file
+    //open file
     {
-        nlp.addIntent('py_save_file', [
-            { entity: 'file_name', id: 'file_name' },
-        ]);
-
-        let file_name = new Bravey.StringEntityRecognizer('file_name');
-        for (let each of allowed_fun_name) {
-            file_name.addMatch(each.id, each.text);
-        }
-        nlp.addEntity(file_name);
-
         nlp.addDocument(
-            'save file as {file_name}',
-            'py_save_file'
+            'open file {file_name}',
+            'open_file', { fromFullSentence: true, expandIntent: true }
         );
         nlp.addDocument(
-            'save file as file name {file_name}',
-            'py_save_file'
+            'open files {file_name}',
+            'open_file', { fromFullSentence: true, expandIntent: true }
         );
-
-        showResults(nlp.test('save file as hello'));
-        showResults(nlp.test('save file as file name hello'));
     }
 
+    //save file
+    {
+        nlp.addDocument(
+            'save file as {file_name}',
+            'save_file', { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'save files as {file_name}',
+            'save_file', { fromFullSentence: true, expandIntent: true }
+        );
+    }
+
+    //python save file
+    {
+        nlp.addDocument(
+            'python save file as {file_name}',
+            'py_save_file', { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'python save files as {file_name}',
+            'py_save_file', { fromFullSentence: true, expandIntent: true }
+        );
+    }
+
+    //javascript save file
+    {
+        nlp.addDocument(
+            'javascript save file as {file_name}',
+            'js_save_file', { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'javascript save files as {file_name}',
+            'js_save_file', { fromFullSentence: true, expandIntent: true }
+        );
+    }
 
     //py_replace_selected
     {
@@ -263,6 +277,16 @@ function setUpNlp() {
         );
 
         showResults(nlp.test('declare an string alpha with text tomato'));
+    }
+
+    //call_function
+    {
+        nlp.addDocument(
+            'call function {create_function_name}',
+            'call_function',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        showResults(nlp.test('call function fibonacci'));
     }
 
     //create_function
@@ -438,15 +462,25 @@ function setUpNlp() {
             'print',
             { fromFullSentence: true, expandIntent: true }
         );
-
         nlp.addDocument(
-            'print {number}',
+            'print variable {argument}',
+            'print',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'print value {argument}',
+            'print',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'print number {number}',
             'print',
             { fromFullSentence: true, expandIntent: true }
         );
 
         showResults(nlp.test('print alpha'));
-        showResults(nlp.test('print 100'));
+        showResults(nlp.test('print variable alpha'));
+        showResults(nlp.test('print number 100'));
     }
 
     //python input
@@ -506,6 +540,58 @@ function setUpNlp() {
         showResults(nlp.test('javascript input 100'));
     }
 
+    //python input var
+    {
+        nlp.addDocument(
+            'python insert variable {argument}',
+            'py_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'python insert value {argument}',
+            'py_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'python input variable {argument}',
+            'py_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'python input value {argument}',
+            'py_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+
+        showResults(nlp.test('python input variable alpha'));
+        showResults(nlp.test('python input value Hello World'));
+    }
+    //javascript input var
+    {
+        nlp.addDocument(
+            'javascript insert variable {argument}',
+            'js_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'javascript insert value {argument}',
+            'js_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'javascript input variable {argument}',
+            'js_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+        nlp.addDocument(
+            'javascript input value {argument}',
+            'js_input_var',
+            { fromFullSentence: true, expandIntent: true }
+        );
+
+        showResults(nlp.test('javascript input variable alpha'));
+        showResults(nlp.test('javascript input value Hello World'));
+    }
     return nlp;
 }
 
